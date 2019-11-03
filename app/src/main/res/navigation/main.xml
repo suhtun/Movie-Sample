@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:startDestination="@id/searchFragment">
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="mm.com.sumyat.archiecture_sample.ui.search.SearchFragment"
+        android:label="SearchFragment" >
+<!--        <action-->
+<!--            android:id="@+id/showRepo"-->
+<!--            app:destination="@id/repoFragment" />-->
+    </fragment>
+<!--    <fragment-->
+<!--        android:id="@+id/repoFragment"-->
+<!--        android:name="com.android.example.github.ui.repo.RepoFragment"-->
+<!--        android:label="RepoFragment" >-->
+<!--        <argument-->
+<!--            android:name="owner"-->
+<!--            app:argType="string" />-->
+<!--        <argument-->
+<!--            android:name="name"-->
+<!--            app:argType="string" />-->
+<!--        <action-->
+<!--            android:id="@+id/showUser"-->
+<!--            app:destination="@id/userFragment" />-->
+<!--    </fragment>-->
+<!--    <fragment-->
+<!--        android:id="@+id/userFragment"-->
+<!--        android:name="com.android.example.github.ui.user.UserFragment"-->
+<!--        android:label="UserFragment" >-->
+<!--        <argument-->
+<!--            android:name="login"-->
+<!--            app:argType="string"/>-->
+<!--        <argument-->
+<!--            android:name="avatarUrl"-->
+<!--            android:defaultValue="@null"-->
+<!--            app:argType="string"-->
+<!--            app:nullable="true" />-->
+<!--        <action-->
+<!--            android:id="@+id/showRepo"-->
+<!--            app:destination="@id/repoFragment" />-->
+<!--    </fragment>-->
+</navigation>

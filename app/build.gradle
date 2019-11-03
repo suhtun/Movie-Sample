@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-kapt'
+
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+
+android {
+    compileSdkVersion build_versions.target_sdk
+    buildToolsVersion build_versions.build_tools
+    defaultConfig {
+        applicationId "mm.com.sumyat.archiecture_sample"
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    dataBinding {
+        enabled = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    sourceSets {
+        androidTest.java.srcDirs += "src/test-common/java"
+        test.java.srcDirs += "src/test-common/java"
+    }
+    lintOptions {
+        lintConfig rootProject.file('lint.xml')
+    }
+}
+
+dependencies {
+    implementation deps.support.app_compat
+    implementation deps.support.recyclerview
+    implementation deps.support.cardview
+    implementation deps.support.design
+    implementation deps.support.core_ktx
+    implementation deps.navigation.fragment_ktx
+    implementation deps.room.runtime
+    implementation deps.lifecycle.runtime
+    implementation deps.lifecycle.java8
+    implementation deps.retrofit.runtime
+    implementation deps.retrofit.gson
+    implementation deps.okhttp_logging_interceptor
+    implementation deps.glide.runtime
+
+    implementation deps.dagger.runtime
+    implementation deps.dagger.android
+    implementation deps.dagger.android_support
+    implementation deps.constraint_layout
+    implementation deps.kotlin.stdlib
+
+    implementation deps.timber
+
+    kapt deps.dagger.android_support_compiler
+    kapt deps.dagger.compiler
+    kapt deps.room.compiler
+    kapt deps.lifecycle.compiler
+}
