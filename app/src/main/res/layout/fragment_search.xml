@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="mm.com.sumyat.archiecture_sample.vo.Movie" />
 
         <import type="java.util.List" />
@@ -31,27 +30,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <!--        <com.google.android.material.textfield.TextInputLayout-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginTop="8dp"-->
-        <!--            app:layout_constraintTop_toTopOf="parent"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            android:layout_marginStart="8dp"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            android:layout_marginEnd="8dp"-->
-        <!--            android:id="@+id/textInputLayout3">-->
-
-        <!--            <EditText-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:id="@+id/input"-->
-        <!--                android:inputType="textNoSuggestions"-->
-        <!--                android:imeOptions="actionSearch"-->
-        <!--                android:hint="@string/search_hint"-->
-        <!--                tools:text="google" />-->
-        <!--        </com.google.android.material.textfield.TextInputLayout>-->
 
         <ProgressBar
             android:id="@+id/load_more_bar"

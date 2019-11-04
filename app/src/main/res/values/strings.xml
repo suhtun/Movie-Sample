@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HH</string>
+    <string name="app_name">Watch Now</string>
     <string name="retry">Retry</string>
     <string name="unknown_error">Unknown Error</string>
     <string name="search_hint">search repositories</string>

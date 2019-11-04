@@ -10,6 +10,10 @@ data class Resource<out T>(val status: Status, val data: T?, val message: String
             return Resource(Status.ERROR, data, msg)
         }
 
+        fun <T> duplicate(): Resource<T> {
+            return Resource(Status.DUPLICATE,null,null)
+        }
+
         fun <T> loading(data: T?): Resource<T> {
             return Resource(Status.LOADING, data, null)
         }

@@ -1,42 +1,37 @@
 package mm.com.sumyat.archiecture_sample.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import mm.com.sumyat.archiecture_sample.BuildConfig
+import mm.com.sumyat.archiecture_sample.api.NetworkServiceFactory
 import mm.com.sumyat.archiecture_sample.api.SampleService
-import mm.com.sumyat.archiecture_sample.db.MovieDao
-import mm.com.sumyat.archiecture_sample.db.SampleDb
-import mm.com.sumyat.archiecture_sample.util.LiveDataCallAdapterFactory
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
+import mm.com.sumyat.archiecture_sample.cache.PreferencesHelper
+import mm.com.sumyat.archiecture_sample.cache.db.MovieDao
+import mm.com.sumyat.archiecture_sample.cache.db.SampleDb
 import javax.inject.Singleton
 
 @Module(includes = [ViewModelModule::class])
 class AppModule {
+
+//    @Singleton
+//    @Provides
+//    fun provideContext(application: Application): Context {
+//        return application
+//    }
+
     @Singleton
     @Provides
-    fun provideGithubService(): SampleService {
-        val okHttpClientBuilder = OkHttpClient.Builder()
-            .readTimeout(120, TimeUnit.SECONDS)
-            .writeTimeout(120, TimeUnit.SECONDS)
+    internal fun provideService(): SampleService {
+        return NetworkServiceFactory.makeNetworkService(BuildConfig.DEBUG)
+    }
 
-        if (BuildConfig.DEBUG) {
-            val logging = HttpLoggingInterceptor()
-            logging.level = HttpLoggingInterceptor.Level.BODY
-            okHttpClientBuilder.addInterceptor(logging)
-        }
-        return Retrofit.Builder()
-            .baseUrl("https://api.github.com/")
-            .client(okHttpClientBuilder.build())
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(LiveDataCallAdapterFactory())
-            .build()
-            .create(SampleService::class.java)
+    @Singleton
+    @Provides
+    internal fun providePreferencesHelper(app: Application): PreferencesHelper {
+        return PreferencesHelper(app)
     }
 
     @Singleton

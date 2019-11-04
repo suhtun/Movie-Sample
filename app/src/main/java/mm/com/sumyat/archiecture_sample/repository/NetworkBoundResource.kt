@@ -1,9 +1,25 @@
-package mm.com.sumyat.archiecture_sample.repository
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import androidx.annotation.MainThread
-import androidx.annotation.WorkerThread
+package com.android.example.github.repository
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.annotation.MainThread
+import androidx.annotation.WorkerThread
 import mm.com.sumyat.archiecture_sample.AppExecutors
 import mm.com.sumyat.archiecture_sample.api.ApiEmptyResponse
 import mm.com.sumyat.archiecture_sample.api.ApiErrorResponse
@@ -11,8 +27,18 @@ import mm.com.sumyat.archiecture_sample.api.ApiResponse
 import mm.com.sumyat.archiecture_sample.api.ApiSuccessResponse
 import mm.com.sumyat.archiecture_sample.vo.Resource
 
+/**
+ * A generic class that can provide a resource backed by both the sqlite database and the network.
+ *
+ *
+ * You can read more about it in the [Architecture
+ * Guide](https://developer.android.com/arch).
+ * @param <ResultType>
+ * @param <RequestType>
+</RequestType></ResultType> */
 abstract class NetworkBoundResource<ResultType, RequestType>
 @MainThread constructor(private val appExecutors: AppExecutors) {
+
     private val result = MediatorLiveData<Resource<ResultType>>()
 
     init {
@@ -35,6 +61,9 @@ abstract class NetworkBoundResource<ResultType, RequestType>
     private fun setValue(newValue: Resource<ResultType>) {
         if (result.value != newValue) {
             result.value = newValue
+        }
+        else{
+            result.value = Resource.duplicate()
         }
     }
 

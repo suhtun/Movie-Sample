@@ -1,21 +1,15 @@
 package mm.com.sumyat.archiecture_sample.ui.search
 
-import android.content.Context
 import android.os.Bundle
-import android.os.IBinder
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,7 +24,7 @@ import mm.com.sumyat.archiecture_sample.ui.SearchViewModel
 import mm.com.sumyat.archiecture_sample.ui.common.RepoListAdapter
 import mm.com.sumyat.archiecture_sample.ui.common.RetryCallback
 import mm.com.sumyat.archiecture_sample.util.autoCleared
-import mm.com.sumyat.archiecture_sample.vo.Movie
+import mm.com.sumyat.archiecture_sample.vo.Status
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -39,7 +33,7 @@ class SearchFragment : Fragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    val viewmodel : SearchViewModel by viewModels {
+    val viewmodel: SearchViewModel by viewModels {
         viewModelFactory
     }
 
@@ -52,57 +46,95 @@ class SearchFragment : Fragment(), Injectable {
 
     var adapter by autoCleared<RepoListAdapter>()
 
-    private fun initContributorList() {
-        viewmodel.contributors.observe(viewLifecycleOwner, Observer { listResource ->
-            if (listResource?.data != null) {
-                adapter.submitList(listResource.data)
-            }
-            else {
-                adapter.submitList(emptyList())
-            }
-        })
+    private lateinit var gridLayoutManager: GridLayoutManager
 
-        binding.repoList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val lastPosition = layoutManager.findLastVisibleItemPosition()
-                if (lastPosition == adapter.itemCount - 1) {
-                    viewmodel.setId()
-                }
-            }
-        })
-    }
+    var pastVisibleItems = 0
+    var visibleItemCount = 0
+    var totalItemCount = 0
+    private var loading: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val dataBinding = DataBindingUtil.inflate<FragmentSearchBinding>(
+        binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_search,
             container,
-            false
+            false,
+            dataBindingComponent
         )
-        dataBinding.callback = object : RetryCallback {
-            override fun retry() {
-                viewmodel.retry()
-            }
-        }
-        binding = dataBinding
-        return dataBinding.root
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.setLifecycleOwner(viewLifecycleOwner)
-        viewmodel.setId()
-        val adapter = RepoListAdapter(dataBindingComponent, appExecutors) { repo ->
-//            navController().navigate(
+        initRecyclerView()
+        val rvAdapter = RepoListAdapter(
+            dataBindingComponent = dataBindingComponent,
+            appExecutors = appExecutors
+        ) { repo ->
+            //            navController().navigate(
 //                SearchFragmentDirections.showRepo(repo.owner.login, repo.name)
 //            )
         }
-        this.adapter = adapter
-        binding.repoList.adapter = adapter
 
-        initContributorList()
+        gridLayoutManager = GridLayoutManager(context, 3)
+        binding.repoList.layoutManager = gridLayoutManager
+        binding.repoList.adapter = rvAdapter
+        this.adapter = rvAdapter
+
+        binding.callback = object : RetryCallback {
+            override fun retry() {
+                viewmodel.refresh()
+            }
+        }
     }
+
+    private fun initRecyclerView() {
+        binding.repoList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0)
+                //check for scroll down
+                {
+                    visibleItemCount = gridLayoutManager.getChildCount()
+                    totalItemCount = gridLayoutManager.getItemCount()
+                    pastVisibleItems = gridLayoutManager.findFirstVisibleItemPosition()
+
+                    if (loading) {
+                        if (visibleItemCount + pastVisibleItems >= totalItemCount) {
+                            loading = false
+                            Timber.w("loading:scroll${loading}")
+                            viewmodel.loadNextPage()
+                        }
+                    }
+                }
+            }
+        })
+
+        binding.searchResult = viewmodel.results
+        viewmodel.results.observe(viewLifecycleOwner, Observer { result ->
+            loading = true
+            if (result.data != null)
+                adapter.submitList(result?.data)
+        })
+
+        viewmodel.loadMoreStatus.observe(viewLifecycleOwner, Observer { loadingMore ->
+            if (loadingMore == null) {
+                binding.loadingMore = false
+            } else {
+                binding.loadingMore = loadingMore.isRunning
+                val error = loadingMore.errorMessageIfNotHandled
+                if (error != null) {
+                    Snackbar.make(binding.loadMoreBar, error, Snackbar.LENGTH_LONG).show()
+                }
+            }
+        })
+    }
+
+    /**
+     * Created to be able to override in tests
+     */
+    fun navController() = findNavController()
 }

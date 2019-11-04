@@ -1,4 +1,4 @@
-package mm.com.sumyat.archiecture_sample.db
+package mm.com.sumyat.archiecture_sample.cache.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
