@@ -1,7 +1,8 @@
-package mm.com.sumyat.archiecture_sample.ui.search
+package mm.com.sumyat.archiecture_sample.ui.movies
 
 import androidx.lifecycle.*
 import mm.com.sumyat.archiecture_sample.repository.RepoRepository
+import mm.com.sumyat.archiecture_sample.testing.OpenForTesting
 import mm.com.sumyat.archiecture_sample.util.AbsentLiveData
 import mm.com.sumyat.archiecture_sample.vo.Movie
 import mm.com.sumyat.archiecture_sample.vo.Resource
@@ -9,7 +10,8 @@ import mm.com.sumyat.archiecture_sample.vo.Status
 import javax.inject.Inject
 
 
-class SearchViewModel @Inject constructor(private val repository: RepoRepository) : ViewModel() {
+@OpenForTesting
+class MoviesViewModel @Inject constructor(private val repository: RepoRepository) : ViewModel() {
 
     private val _query: MutableLiveData<Int> = MutableLiveData<Int>().apply {
         value = 1

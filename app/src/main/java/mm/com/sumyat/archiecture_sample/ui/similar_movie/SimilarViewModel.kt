@@ -1,19 +1,16 @@
-package mm.com.sumyat.archiecture_sample.ui.movie_details
+package mm.com.sumyat.archiecture_sample.ui.similar_movie
 
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import mm.com.sumyat.archiecture_sample.repository.DetailRepository
-import mm.com.sumyat.archiecture_sample.repository.RepoRepository
 import mm.com.sumyat.archiecture_sample.util.AbsentLiveData
 import mm.com.sumyat.archiecture_sample.vo.MDetail
-import mm.com.sumyat.archiecture_sample.vo.Movie
 import mm.com.sumyat.archiecture_sample.vo.Resource
 import mm.com.sumyat.archiecture_sample.vo.Status
-import java.util.*
 import javax.inject.Inject
 
 
-class MovieDetailViewModel @Inject constructor(private val repository: DetailRepository) :
+class SimilarViewModel @Inject constructor(private val repository: DetailRepository) :
     ViewModel() {
 
     private val _query: MutableLiveData<Int> = MutableLiveData<Int>().apply {

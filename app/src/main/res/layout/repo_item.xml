@@ -4,8 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.bumptech.glide.request.RequestListener"/>
-        <import type="android.graphics.drawable.Drawable"/>
+
+        <import type="com.bumptech.glide.request.RequestListener" />
+
+        <import type="android.graphics.drawable.Drawable" />
+
         <variable
             name="repo"
             type="mm.com.sumyat.archiecture_sample.vo.Movie" />
@@ -26,26 +29,26 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="match_parent"
-                app:imageUrl="@{`https://image.tmdb.org/t/p/w500`+repo.poster_path}"
-                app:imageRequestListener="@{imageRequestListener}"
-                android:layout_height="@dimen/photo_size"
                 android:id="@+id/avatar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/photo_size"
                 android:scaleType="centerCrop"
-                android:src="@drawable/poster_placeholder"/>
+                android:src="@drawable/poster_placeholder"
+                app:imageRequestListener="@{imageRequestListener}"
+                app:imageUrl="@{`https://image.tmdb.org/t/p/w500`+repo.poster_path}" />
 
             <TextView
+                android:id="@+id/name"
                 android:layout_width="368dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/name"
-                android:text="@{repo.title}"
-                tools:text="title"
-                android:layout_marginTop="2dp"
                 android:layout_marginStart="@dimen/margin1"
                 android:layout_marginLeft="@dimen/margin1"
-                android:textSize="@dimen/text_size"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
                 android:maxLines="1"
-                android:ellipsize="end"/>
+                android:text="@{repo.title}"
+                android:textSize="@dimen/text_size"
+                tools:text="title" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -54,9 +57,7 @@
                 android:layout_marginLeft="@dimen/margin1"
                 android:layout_marginBottom="4dp"
                 android:text="@{repo.release_date}"
-                tools:text="2019"
-                android:maxLength="4"
-                android:textSize="@dimen/text_size"/>
+                android:textSize="@dimen/text_size" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

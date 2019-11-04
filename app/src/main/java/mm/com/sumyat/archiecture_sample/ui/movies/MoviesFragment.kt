@@ -1,4 +1,4 @@
-package mm.com.sumyat.archiecture_sample.ui.movie_details
+package mm.com.sumyat.archiecture_sample.ui.movies
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -17,22 +18,22 @@ import com.google.gson.Gson
 import mm.com.sumyat.archiecture_sample.AppExecutors
 import mm.com.sumyat.archiecture_sample.R
 import mm.com.sumyat.archiecture_sample.binding.FragmentDataBindingComponent
-import mm.com.sumyat.archiecture_sample.databinding.FragmentMovieDetailBinding
+import mm.com.sumyat.archiecture_sample.databinding.FragmentSearchBinding
 import mm.com.sumyat.archiecture_sample.di.Injectable
-import mm.com.sumyat.archiecture_sample.ui.search.SearchViewModel
+import mm.com.sumyat.archiecture_sample.testing.OpenForTesting
 import mm.com.sumyat.archiecture_sample.ui.common.RepoListAdapter
 import mm.com.sumyat.archiecture_sample.ui.common.RetryCallback
 import mm.com.sumyat.archiecture_sample.util.autoCleared
-import mm.com.sumyat.archiecture_sample.vo.Movie
 import timber.log.Timber
 import javax.inject.Inject
 
-class MovieDetailFragment : Fragment(), Injectable {
+@OpenForTesting
+class MoviesFragment : Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    val viewmodel: MovieDetailViewModel by viewModels {
+    val viewmodel: MoviesViewModel by viewModels {
         viewModelFactory
     }
 
@@ -41,7 +42,7 @@ class MovieDetailFragment : Fragment(), Injectable {
 
     var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
 
-    var binding by autoCleared<FragmentMovieDetailBinding>()
+    var binding by autoCleared<FragmentSearchBinding>()
 
     var adapter by autoCleared<RepoListAdapter>()
 
@@ -58,7 +59,7 @@ class MovieDetailFragment : Fragment(), Injectable {
     ): View? {
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_movie_detail,
+            R.layout.fragment_search,
             container,
             false,
             dataBindingComponent
@@ -68,27 +69,20 @@ class MovieDetailFragment : Fragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val params = MovieDetailFragmentArgs.fromBundle(arguments!!)
-        val movie: Movie = Gson().fromJson(params.data, Movie::class.java)
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.movie = movie
-
-        viewmodel.setQuery(movie.id)
-
         initRecyclerView()
         val rvAdapter = RepoListAdapter(
             dataBindingComponent = dataBindingComponent,
             appExecutors = appExecutors
         ) { repo ->
-            //            navController().navigate(
-//                SearchFragmentDirections.showDetail(Gson().toJson(repo))
-//            )
+            navController().navigate(
+                MoviesFragmentDirections.showDetail(Gson().toJson(repo))
+            )
         }
 
-        binding.similarList.isNestedScrollingEnabled = false
         gridLayoutManager = GridLayoutManager(context, 3)
-        binding.similarList.layoutManager = gridLayoutManager
-        binding.similarList.adapter = rvAdapter
+        binding.repoList.layoutManager = gridLayoutManager
+        binding.repoList.adapter = rvAdapter
         this.adapter = rvAdapter
 
         binding.callback = object : RetryCallback {
@@ -96,16 +90,10 @@ class MovieDetailFragment : Fragment(), Injectable {
                 viewmodel.refresh()
             }
         }
-
-        binding.loadmore = object : RetryCallback {
-            override fun retry() {
-                viewmodel.loadNextPage()
-            }
-        }
     }
 
     private fun initRecyclerView() {
-        binding.similarList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.repoList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0)
                 //check for scroll down
@@ -125,21 +113,11 @@ class MovieDetailFragment : Fragment(), Injectable {
             }
         })
 
-//        binding.searchResult = viewmodel.results
+        binding.searchResult = viewmodel.results
         viewmodel.results.observe(viewLifecycleOwner, Observer { result ->
             loading = true
-            if (result!= null)
-                adapter.submitList(result?.data?.map {
-                    Movie(
-                        it.id,
-                        it.title,
-                        it.poster_path,
-                        "",
-                        "",
-                        it.release_date
-                    )
-                })
-
+            if (result.data != null)
+                adapter.submitList(result?.data)
         })
 
         viewmodel.loadMoreStatus.observe(viewLifecycleOwner, Observer { loadingMore ->
@@ -154,4 +132,9 @@ class MovieDetailFragment : Fragment(), Injectable {
             }
         })
     }
+
+    /**
+     * Created to be able to override in tests
+     */
+    fun navController() = findNavController()
 }

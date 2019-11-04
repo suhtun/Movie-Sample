@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="mm.com.sumyat.archiecture_sample.ui.search.SearchFragment"
+        android:name="mm.com.sumyat.archiecture_sample.ui.movies.MoviesFragment"
         android:label="SearchFragment">
         <action
             android:id="@+id/showDetail"
@@ -13,7 +13,7 @@
     </fragment>
     <fragment
         android:id="@+id/MovieDetailFragment"
-        android:name="mm.com.sumyat.archiecture_sample.ui.movie_details.MovieDetailFragment"
+        android:name="mm.com.sumyat.archiecture_sample.ui.similar_movie.SimilarFragment"
         android:label="Movie Detail">
         <argument
             android:name="data"
