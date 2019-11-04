@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.bumptech.glide.request.RequestListener" />
+
+        <import type="android.graphics.drawable.Drawable" />
+
+        <import type="java.util.List" />
+
+        <import type="mm.com.sumyat.archiecture_sample.vo.Status" />
+
+        <import type="mm.com.sumyat.archiecture_sample.vo.Resource" />
+
+        <import type="androidx.lifecycle.LiveData" />
+
+        <import type="mm.com.sumyat.archiecture_sample.vo.MDetail" />
+
+        <variable
+            name="loadingMore"
+            type="boolean" />
+
+        <variable
+            name="searchResult"
+            type="LiveData&lt;Resource&lt;List&lt;MDetail>>>" />
+
+        <variable
+            name="callback"
+            type="mm.com.sumyat.archiecture_sample.ui.common.RetryCallback" />
+
+        <variable
+            name="loadmore"
+            type="mm.com.sumyat.archiecture_sample.ui.common.RetryCallback" />
+
+        <variable
+            name="movie"
+            type="mm.com.sumyat.archiecture_sample.vo.Movie" />
+
+        <variable
+            name="imageRequestListener"
+            type="com.bumptech.glide.request.RequestListener&lt;Drawable>" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/txt_error"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Connection Problem!!"
+                android:visibility="gone" />
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                    <ImageView
+                        android:id="@+id/iv_movie_poster"
+                        android:layout_width="match_parent"
+                        android:layout_height="350dp"
+                        android:layout_gravity="center"
+                        android:scaleType="matrix"
+                        android:src="@drawable/poster_placeholder"
+                        app:imageRequestListener="@{imageRequestListener}"
+                        app:imageUrl="@{`https://image.tmdb.org/t/p/w500`+movie.poster_path}" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{movie.title}"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            tools:text="movie title" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:text="Movie Info"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="ReleaseDate: "
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/movie_release_date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@{movie.release_date}"
+                                android:textSize="12sp"
+                                tools:text="2019" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Rating: "
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/movie_rating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@{movie.vote_average}"
+                                android:textSize="12sp"
+                                tools:text="2" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Overview "
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/movie_overview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@{movie.overview}"
+                            android:textSize="12sp"
+                            tools:text="overview ........." />
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    <ProgressBar
+                        android:id="@+id/load_more_bar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:indeterminate="true"
+                        app:visibleGone="@{loadingMore}" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/similar_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:scrollbars="vertical"
+                        app:layoutManager="LinearLayoutManager"
+                        app:layout_constraintBottom_toTopOf="@id/load_more_bar"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        tools:listitem="@layout/repo_item" />
+
+                        <Button
+                            android:layout_below="@+id/similar_list"
+                            android:layout_alignParentRight="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> loadmore.retry()}"
+                            android:text="load more ..."/>
+
+                    <TextView
+                        android:id="@+id/no_results_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="Empty Text Result"
+                        app:visibleGone="@{searchResult.status == Status.SUCCESS &amp;&amp; searchResult.data.size == 0}" />
+
+                    <include
+                        layout="@layout/loading_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        app:callback="@{() -> callback.retry()}"
+                        app:resource="@{(Resource) searchResult}" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

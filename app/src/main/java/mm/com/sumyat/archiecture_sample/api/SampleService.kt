@@ -13,4 +13,10 @@ interface SampleService {
 
     @GET("now_playing")
     fun getPlayingMovie(@Query("page") page: Int): Call<PlayingMoviewsResponse>
+
+    @GET("{movie_id}/similar?page=1")
+    fun getSimilarMovies(@Path("movie_id") id: Int): LiveData<ApiResponse<PlayingMoviewsResponse>>
+
+    @GET("{movie_id}/similar")
+    fun getSimilarMovies(@Path("movie_id") id: Int, @Query("page") page: Int): Call<PlayingMoviewsResponse>
 }

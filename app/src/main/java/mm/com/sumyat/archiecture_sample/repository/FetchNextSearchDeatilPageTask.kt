@@ -20,6 +20,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import mm.com.sumyat.archiecture_sample.api.*
 import mm.com.sumyat.archiecture_sample.cache.db.SampleDb
+import mm.com.sumyat.archiecture_sample.vo.MDetail
 import mm.com.sumyat.archiecture_sample.vo.Movie
 import mm.com.sumyat.archiecture_sample.vo.Resource
 import retrofit2.Response
@@ -28,40 +29,35 @@ import java.io.IOException
 /**
  * A task that reads the search result in the database and fetches the next page, if it has one.
  */
-class FetchNextSearchPageTask constructor(
-    private val page: Int,
-    private val movie_id:Int,
+class FetchNextSearchDeatilPageTask constructor(
+    private val movie_id: Int,
     private val service: SampleService,
-    private val db: SampleDb,
-    private val isDetail: Boolean
-) : Runnable {
+    private val db: SampleDb
+    ) : Runnable {
     private val _liveData = MutableLiveData<Resource<Boolean>>()
     val liveData: LiveData<Resource<Boolean>> = _liveData
-
-    fun response(): Response<PlayingMoviewsResponse> {
-        when (isDetail) {
-            true -> return service.getSimilarMovies(movie_id,page).execute()
-            false -> return service.getPlayingMovie(page).execute()
-        }
-    }
 
     override fun run() {
         _liveData.postValue(null)
 
         val newValue = try {
-            var response = response()
+            var next: Int = 0
+            db.runInTransaction {
+                next = db.repoDao().searchNext(movie_id) + 1
+                db.repoDao().updateNext(movie_id, next)
+            }
+            var response = service.getSimilarMovies(movie_id, next).execute()
             val apiResponse = ApiResponse.create(response)
             when (apiResponse) {
                 is ApiSuccessResponse -> {
                     db.runInTransaction {
-                        db.repoDao().insertRepos(apiResponse.body.results.map {
-                            Movie(
+                        db.repoDao().insertDetails(apiResponse.body.results.map {
+                            MDetail(
                                 it.id,
                                 it.title,
                                 it.poster_path,
-                                it.vote_average.toString(),
-                                it.overview,
-                                it.release_date
+                                it.release_date,
+                                movie_id
                             )
                         })
                     }

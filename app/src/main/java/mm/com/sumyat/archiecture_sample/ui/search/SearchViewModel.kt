@@ -1,6 +1,5 @@
-package mm.com.sumyat.archiecture_sample.ui
+package mm.com.sumyat.archiecture_sample.ui.search
 
-import android.os.Handler
 import androidx.lifecycle.*
 import mm.com.sumyat.archiecture_sample.repository.RepoRepository
 import mm.com.sumyat.archiecture_sample.util.AbsentLiveData
@@ -24,7 +23,8 @@ class SearchViewModel @Inject constructor(private val repository: RepoRepository
         results = repository.search()
     }
 
-    private val nextPageHandler = NextPageHandler(repository)
+    private val nextPageHandler =
+        NextPageHandler(repository)
 
     var loadMoreStatus: LiveData<LoadMoreState> = nextPageHandler.loadMoreState
 
@@ -54,10 +54,11 @@ class SearchViewModel @Inject constructor(private val repository: RepoRepository
         fun queryNextPage(page: Int) {
             unregister()
             nextPageLiveData = repository.searchNextPage()
-            loadMoreState.value = LoadMoreState(
-                isRunning = true,
-                errorMessage = null
-            )
+            loadMoreState.value =
+                LoadMoreState(
+                    isRunning = true,
+                    errorMessage = null
+                )
             nextPageLiveData?.observeForever(this)
         }
 
@@ -104,10 +105,11 @@ class SearchViewModel @Inject constructor(private val repository: RepoRepository
         fun reset() {
             unregister()
             _hasMore = true
-            loadMoreState.value = LoadMoreState(
-                isRunning = false,
-                errorMessage = null
-            )
+            loadMoreState.value =
+                LoadMoreState(
+                    isRunning = false,
+                    errorMessage = null
+                )
         }
     }
 

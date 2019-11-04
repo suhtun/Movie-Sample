@@ -2,7 +2,9 @@ package mm.com.sumyat.archiecture_sample.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.android.example.github.repository.DetailNetworkBoundResource
 import com.android.example.github.repository.NetworkBoundResource
+import com.google.gson.Gson
 import mm.com.sumyat.archiecture_sample.AppExecutors
 import mm.com.sumyat.archiecture_sample.api.ApiSuccessResponse
 import mm.com.sumyat.archiecture_sample.api.PlayingMoviewsResponse
@@ -11,74 +13,63 @@ import mm.com.sumyat.archiecture_sample.cache.PreferencesHelper
 import mm.com.sumyat.archiecture_sample.cache.db.MovieDao
 import mm.com.sumyat.archiecture_sample.cache.db.SampleDb
 import mm.com.sumyat.archiecture_sample.util.AbsentLiveData
-import mm.com.sumyat.archiecture_sample.vo.Movie
+import mm.com.sumyat.archiecture_sample.vo.MDetail
 import mm.com.sumyat.archiecture_sample.vo.Resource
 import javax.inject.Inject
 import javax.inject.Singleton
+import mm.com.sumyat.archiecture_sample.vo.Next
 
 @Singleton
-class RepoRepository @Inject constructor(
+class DetailRepository @Inject constructor(
     private val appExecutors: AppExecutors,
     private val db: SampleDb,
     private val movieDao: MovieDao,
-    private val service: SampleService,
-    private val preferencesHelper: PreferencesHelper
+    private val service: SampleService
 ) {
 
-    fun searchNextPage(): LiveData<Resource<Boolean>> {
-        setPage()
-        val fetchNextSearchPageTask = FetchNextSearchPageTask(
-            page = getPage(),
-            movie_id = 0,
+    fun searchNextPage(movieid: Int): LiveData<Resource<Boolean>> {
+        val fetchNextSearchPageTask = FetchNextSearchDeatilPageTask(
+            movie_id = movieid,
             service = service,
-            db = db,
-            isDetail = false
+            db = db
         )
         appExecutors.networkIO().execute(fetchNextSearchPageTask)
         return fetchNextSearchPageTask.liveData
     }
 
-    fun getPage(): Int {
-        return preferencesHelper.nextPage
-    }
-
-    private fun setPage() {
-        preferencesHelper.nextPage = getPage() + 1
-    }
-
-    fun search(): LiveData<Resource<List<Movie>>> {
-        return object : NetworkBoundResource<List<Movie>, PlayingMoviewsResponse>(appExecutors) {
+    fun search(movieid: Int): LiveData<Resource<List<MDetail>>> {
+        return object : DetailNetworkBoundResource<List<MDetail>, PlayingMoviewsResponse>(appExecutors) {
 
             override fun saveCallResult(items: PlayingMoviewsResponse) {
                 db.runInTransaction {
-                    movieDao.insertRepos(items.results.map {
-                        Movie(
+                    movieDao.insertNext(Next(movieid, 1))
+                    movieDao.insertDetails(items.results.map {
+                        MDetail(
                             it.id,
                             it.title,
                             it.poster_path,
-                            it.vote_average.toString(),
-                            it.overview,
-                            it.release_date
+                            it.release_date,
+                            movieid
                         )
                     })
                 }
             }
 
-            override fun shouldFetch(data: List<Movie>?): Boolean {
+            override fun shouldFetch(data: List<MDetail>?): Boolean {
                 return data == null || data.isEmpty()
             }
 
-            override fun loadFromDb(): LiveData<List<Movie>> {
-                return Transformations.switchMap(movieDao.search()) { searchData ->
+            override fun loadFromDb(): LiveData<List<MDetail>> {
+                return Transformations.switchMap(movieDao.searchMDetails(movieid)) { searchData ->
                     if (searchData == null) {
                         AbsentLiveData.create()
                     } else {
-                        movieDao.search()
+                        movieDao.searchMDetails(movieid)
                     }
                 }
             }
 
-            override fun createCall() = service.getPlayingMovie()
+            override fun createCall() = service.getSimilarMovies(movieid)
 
             override fun processResponse(response: ApiSuccessResponse<PlayingMoviewsResponse>)
                     : PlayingMoviewsResponse {
