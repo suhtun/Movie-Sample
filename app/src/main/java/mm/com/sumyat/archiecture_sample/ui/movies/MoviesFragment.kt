@@ -20,12 +20,14 @@ import mm.com.sumyat.archiecture_sample.R
 import mm.com.sumyat.archiecture_sample.binding.FragmentDataBindingComponent
 import mm.com.sumyat.archiecture_sample.databinding.FragmentSearchBinding
 import mm.com.sumyat.archiecture_sample.di.Injectable
+import mm.com.sumyat.archiecture_sample.testing.OpenForTesting
 import mm.com.sumyat.archiecture_sample.ui.common.RepoListAdapter
 import mm.com.sumyat.archiecture_sample.ui.common.RetryCallback
 import mm.com.sumyat.archiecture_sample.util.autoCleared
 import timber.log.Timber
 import javax.inject.Inject
 
+@OpenForTesting
 class MoviesFragment : Fragment(), Injectable {
 
     @Inject
