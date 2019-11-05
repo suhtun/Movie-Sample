@@ -3,6 +3,7 @@ package mm.com.sumyat.archiecture_sample.ui.movies
 import androidx.lifecycle.*
 import mm.com.sumyat.archiecture_sample.repository.RepoRepository
 import mm.com.sumyat.archiecture_sample.util.AbsentLiveData
+import mm.com.sumyat.archiecture_sample.vo.MDetail
 import mm.com.sumyat.archiecture_sample.vo.Movie
 import mm.com.sumyat.archiecture_sample.vo.Resource
 import mm.com.sumyat.archiecture_sample.vo.Status
@@ -15,28 +16,44 @@ class MoviesViewModel @Inject constructor(private val repository: RepoRepository
         value = 1
     }
 
-    val query: LiveData<Int> = _query
-
-    var results: LiveData<Resource<List<Movie>>> = AbsentLiveData.create()
-
-    init {
-        results = repository.searchMovie()
-    }
+    var results: LiveData<Resource<List<Movie>>> = Transformations
+        .switchMap(_query) { search ->
+            if (search == 1) {
+                AbsentLiveData.create()
+            } else {
+                repository.searchMovie()
+            }
+        }
 
     private val nextPageHandler =
         NextPageHandler(repository)
 
     var loadMoreStatus: LiveData<LoadMoreState> = nextPageHandler.loadMoreState
 
+    init {
+        setQuery(2)
+    }
+
+    fun setQuery(movie_id: Int) {
+        if (movie_id == _query.value) {
+            return
+        }
+        nextPageHandler.reset()
+        _query.value = movie_id
+    }
+
     fun loadNextPage() {
-        _query.value?.let { a ->
-            _query.value = a + 1
-            nextPageHandler.queryNextPage(query.value!!)
+        _query.value?.let {
+            if (it != 1) {
+                nextPageHandler.queryNextPage(it)
+            }
         }
     }
 
     fun refresh() {
-        results = repository.searchMovie()
+        _query.value?.let {
+            _query.value = it
+        }
     }
 
     class NextPageHandler(private val repository: RepoRepository) : Observer<Resource<Boolean>> {
