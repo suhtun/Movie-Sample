@@ -12,7 +12,7 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 allOpen {
     // allows mocking for classes w/o directly opening them for release builds
-    annotation 'com.android.example.github.testing.OpenClass'
+    annotation 'mm.com.sumyat.archiecture_sample.testing.OpenClass'
 }
 
 android {
@@ -24,7 +24,7 @@ android {
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "mm.com.sumyat.archiecture_sample.SampleTestRunner"
+        testInstrumentationRunner "mm.com.sumyat.archiecture_sample.util.SampleTestRunner"
     }
     buildTypes {
         debug {

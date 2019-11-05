@@ -10,6 +10,7 @@ import mm.com.sumyat.archiecture_sample.api.SampleService
 import mm.com.sumyat.archiecture_sample.cache.PreferencesHelper
 import mm.com.sumyat.archiecture_sample.cache.db.MovieDao
 import mm.com.sumyat.archiecture_sample.cache.db.SampleDb
+import mm.com.sumyat.archiecture_sample.testing.OpenForTesting
 import mm.com.sumyat.archiecture_sample.util.AbsentLiveData
 import mm.com.sumyat.archiecture_sample.vo.Movie
 import mm.com.sumyat.archiecture_sample.vo.Resource
@@ -17,6 +18,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
+@OpenForTesting
 class RepoRepository @Inject constructor(
     private val appExecutors: AppExecutors,
     private val db: SampleDb,

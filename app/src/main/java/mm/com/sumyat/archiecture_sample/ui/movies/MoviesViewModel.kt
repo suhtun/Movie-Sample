@@ -2,6 +2,7 @@ package mm.com.sumyat.archiecture_sample.ui.movies
 
 import androidx.lifecycle.*
 import mm.com.sumyat.archiecture_sample.repository.RepoRepository
+import mm.com.sumyat.archiecture_sample.testing.OpenForTesting
 import mm.com.sumyat.archiecture_sample.util.AbsentLiveData
 import mm.com.sumyat.archiecture_sample.vo.MDetail
 import mm.com.sumyat.archiecture_sample.vo.Movie
@@ -9,16 +10,14 @@ import mm.com.sumyat.archiecture_sample.vo.Resource
 import mm.com.sumyat.archiecture_sample.vo.Status
 import javax.inject.Inject
 
+@OpenForTesting
+open class MoviesViewModel @Inject constructor(private val repository: RepoRepository) : ViewModel() {
 
-class MoviesViewModel @Inject constructor(private val repository: RepoRepository) : ViewModel() {
-
-    private val _query: MutableLiveData<Int> = MutableLiveData<Int>().apply {
-        value = 1
-    }
+    private val _query = MutableLiveData<String>()
 
     var results: LiveData<Resource<List<Movie>>> = Transformations
         .switchMap(_query) { search ->
-            if (search == 1) {
+            if (search.isNullOrBlank()) {
                 AbsentLiveData.create()
             } else {
                 repository.searchMovie()
@@ -30,21 +29,17 @@ class MoviesViewModel @Inject constructor(private val repository: RepoRepository
 
     var loadMoreStatus: LiveData<LoadMoreState> = nextPageHandler.loadMoreState
 
-    init {
-        setQuery(2)
-    }
-
-    fun setQuery(movie_id: Int) {
-        if (movie_id == _query.value) {
+    fun setQuery(id: String) {
+        if (id == _query.value) {
             return
         }
         nextPageHandler.reset()
-        _query.value = movie_id
+        _query.value = id
     }
 
     fun loadNextPage() {
         _query.value?.let {
-            if (it != 1) {
+            if (it.isNotBlank()) {
                 nextPageHandler.queryNextPage(it)
             }
         }
@@ -68,8 +63,12 @@ class MoviesViewModel @Inject constructor(private val repository: RepoRepository
             reset()
         }
 
-        fun queryNextPage(page: Int) {
+        fun queryNextPage(query: String) {
+            if (this.query == query) {
+                return
+            }
             unregister()
+            this.query = query
             nextPageLiveData = repository.searchNextPage()
             loadMoreState.value =
                 LoadMoreState(

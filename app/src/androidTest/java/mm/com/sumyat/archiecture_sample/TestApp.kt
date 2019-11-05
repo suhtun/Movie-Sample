@@ -21,6 +21,6 @@ import android.app.Application
 /**
  * We use a separate App for tests to prevent initializing dependency injection.
  *
- * See [com.android.example.github.util.GithubTestRunner].
+ * See [mm.com.sumyat.archiecture_sample.util.SampleTestRunner].
  */
 class TestApp : Application()

@@ -85,6 +85,8 @@ class MoviesFragment : Fragment(), Injectable {
         binding.repoList.adapter = rvAdapter
         this.adapter = rvAdapter
 
+        viewmodel.setQuery("start")
+
         binding.callback = object : RetryCallback {
             override fun retry() {
                 viewmodel.refresh()
