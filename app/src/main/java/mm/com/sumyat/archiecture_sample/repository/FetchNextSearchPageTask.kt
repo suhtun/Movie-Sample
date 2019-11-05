@@ -26,35 +26,26 @@ import retrofit2.Response
 import java.io.IOException
 
 /**
- * A task that reads the search result in the database and fetches the next page, if it has one.
+ * A task that reads the getMovies result in the database and fetches the next page, if it has one.
  */
 class FetchNextSearchPageTask constructor(
     private val page: Int,
-    private val movie_id:Int,
     private val service: SampleService,
-    private val db: SampleDb,
-    private val isDetail: Boolean
+    private val db: SampleDb
 ) : Runnable {
     private val _liveData = MutableLiveData<Resource<Boolean>>()
     val liveData: LiveData<Resource<Boolean>> = _liveData
-
-    fun response(): Response<PlayingMoviewsResponse> {
-        when (isDetail) {
-            true -> return service.getSimilarMovies(movie_id,page).execute()
-            false -> return service.getPlayingMovie(page).execute()
-        }
-    }
 
     override fun run() {
         _liveData.postValue(null)
 
         val newValue = try {
-            var response = response()
+            var response = service.getPlayingMovie(page).execute()
             val apiResponse = ApiResponse.create(response)
             when (apiResponse) {
                 is ApiSuccessResponse -> {
                     db.runInTransaction {
-                        db.repoDao().insertRepos(apiResponse.body.results.map {
+                        db.movieDao().insertRepos(apiResponse.body.movieResults.map {
                             Movie(
                                 it.id,
                                 it.title,

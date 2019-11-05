@@ -20,7 +20,7 @@ class MoviesViewModel @Inject constructor(private val repository: RepoRepository
     var results: LiveData<Resource<List<Movie>>> = AbsentLiveData.create()
 
     init {
-        results = repository.search()
+        results = repository.searchMovie()
     }
 
     private val nextPageHandler =
@@ -36,7 +36,7 @@ class MoviesViewModel @Inject constructor(private val repository: RepoRepository
     }
 
     fun refresh() {
-        results = repository.search()
+        results = repository.searchMovie()
     }
 
     class NextPageHandler(private val repository: RepoRepository) : Observer<Resource<Boolean>> {

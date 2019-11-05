@@ -1,7 +1,6 @@
 package mm.com.sumyat.archiecture_sample.di
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -46,6 +45,6 @@ class AppModule {
     @Singleton
     @Provides
     fun provideRepoDao(db: SampleDb): MovieDao {
-        return db.repoDao()
+        return db.movieDao()
     }
 }

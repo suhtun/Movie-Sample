@@ -21,13 +21,11 @@ import androidx.lifecycle.MutableLiveData
 import mm.com.sumyat.archiecture_sample.api.*
 import mm.com.sumyat.archiecture_sample.cache.db.SampleDb
 import mm.com.sumyat.archiecture_sample.vo.MDetail
-import mm.com.sumyat.archiecture_sample.vo.Movie
 import mm.com.sumyat.archiecture_sample.vo.Resource
-import retrofit2.Response
 import java.io.IOException
 
 /**
- * A task that reads the search result in the database and fetches the next page, if it has one.
+ * A task that reads the getMovies result in the database and fetches the next page, if it has one.
  */
 class FetchNextSearchDeatilPageTask constructor(
     private val movie_id: Int,
@@ -43,15 +41,15 @@ class FetchNextSearchDeatilPageTask constructor(
         val newValue = try {
             var next: Int = 0
             db.runInTransaction {
-                next = db.repoDao().searchNext(movie_id) + 1
-                db.repoDao().updateNext(movie_id, next)
+                next = db.movieDao().searchNext(movie_id) + 1
+                db.movieDao().updateNext(movie_id, next)
             }
             var response = service.getSimilarMovies(movie_id, next).execute()
             val apiResponse = ApiResponse.create(response)
             when (apiResponse) {
                 is ApiSuccessResponse -> {
                     db.runInTransaction {
-                        db.repoDao().insertDetails(apiResponse.body.results.map {
+                        db.movieDao().insertDetails(apiResponse.body.movieResults.map {
                             MDetail(
                                 it.id,
                                 it.title,

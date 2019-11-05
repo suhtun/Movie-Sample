@@ -16,21 +16,52 @@
 
 package mm.com.sumyat.archiecture_sample.util
 
+import mm.com.sumyat.archiecture_sample.api.MovieResult
 import mm.com.sumyat.archiecture_sample.vo.Movie
 import java.util.concurrent.ThreadLocalRandom
 
 
 object TestUtil {
 
-    fun createMovies(count: Int, title: String): List<Movie> {
+    fun createMovies(count: Int, title: String): List<MovieResult> {
         return (0 until count).map {
-            createMovie(title)
+            createMovieResponse(title)
+        }
+    }
+
+    fun movieResultToMovie(list: List<MovieResult>): List<Movie> {
+        return list.map {
+            Movie(
+                it.id,
+                it.title,
+                it.poster_path,
+                it.vote_average.toString(),
+                it.overview,
+                it.release_date
+            )
         }
     }
 
     fun createMovie(title: String) = Movie(
         randomInt(), title, randomUuid(), randomUuid(), randomUuid(),
         randomUuid()
+    )
+
+    fun createMovieResponse(title: String) = MovieResult(
+        43.929,
+        7271,
+        false,
+        "/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg",
+        randomInt(),
+        false,
+        "/8QXGNP0Vb4nsYKub59XpAhiUSQN.jpg",
+        "en",
+        "Blade Runner 2049",
+        arrayListOf<Int>(),
+        title,
+        7.4,
+        "Thirty years after the events of the first film, a new blade runner, LAPD Officer K, unearths a long-buried secret that has the potential to plunge what's left of society into chaos. K's discovery leads him on a quest to find Rick Deckard, a former LAPD blade runner who has been missing for 30 years.",
+        "/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg"
     )
 
     fun randomUuid(): String {

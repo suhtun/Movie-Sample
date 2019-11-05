@@ -3,13 +3,10 @@ package mm.com.sumyat.archiecture_sample.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.android.example.github.repository.DetailNetworkBoundResource
-import com.android.example.github.repository.NetworkBoundResource
-import com.google.gson.Gson
 import mm.com.sumyat.archiecture_sample.AppExecutors
 import mm.com.sumyat.archiecture_sample.api.ApiSuccessResponse
 import mm.com.sumyat.archiecture_sample.api.PlayingMoviewsResponse
 import mm.com.sumyat.archiecture_sample.api.SampleService
-import mm.com.sumyat.archiecture_sample.cache.PreferencesHelper
 import mm.com.sumyat.archiecture_sample.cache.db.MovieDao
 import mm.com.sumyat.archiecture_sample.cache.db.SampleDb
 import mm.com.sumyat.archiecture_sample.util.AbsentLiveData
@@ -43,7 +40,7 @@ class DetailRepository @Inject constructor(
             override fun saveCallResult(items: PlayingMoviewsResponse) {
                 db.runInTransaction {
                     movieDao.insertNext(Next(movieid, 1))
-                    movieDao.insertDetails(items.results.map {
+                    movieDao.insertDetails(items.movieResults.map {
                         MDetail(
                             it.id,
                             it.title,

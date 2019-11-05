@@ -5,12 +5,12 @@ import com.google.gson.annotations.SerializedName
 data class PlayingMoviewsResponse(
 
     @SerializedName("results")
-    val results: List<Result>,
+    val movieResults: List<MovieResult>,
     @SerializedName("page")
     val page: Int = 0
 )
 
-data class Result(
+data class MovieResult(
     @field:SerializedName("popularity")
     val popularity: Double,
     @field:SerializedName("vote_count")

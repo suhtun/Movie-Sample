@@ -13,5 +13,5 @@ import mm.com.sumyat.archiecture_sample.vo.Next
     exportSchema = false
 )
 abstract class SampleDb : RoomDatabase() {
-    abstract fun repoDao(): MovieDao
+    abstract fun movieDao(): MovieDao
 }

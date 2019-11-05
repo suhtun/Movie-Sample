@@ -48,7 +48,7 @@ class SampleServiceTest {
         val request = mockWebServer.takeRequest()
         Assert.assertThat(request.path, CoreMatchers.`is`("/now_playing?page=1"))
 
-        val results = repos.results
+        val results = repos.movieResults
 
         Assert.assertThat(results.size, CoreMatchers.`is`(20))
 
@@ -64,7 +64,7 @@ class SampleServiceTest {
     @Test
     fun getSimilarMovies(){
         enqueueResponse("similar.json")
-        val repos = (getValue(service.getSimilarMovies(603)) as ApiSuccessResponse).body.results
+        val repos = (getValue(service.getSimilarMovies(603)) as ApiSuccessResponse).body.movieResults
 
         val request = mockWebServer.takeRequest()
         Assert.assertThat(request.path, CoreMatchers.`is`("/603/similar?page=1"))

@@ -82,7 +82,7 @@ abstract class DetailNetworkBoundResource<ResultType, RequestType>
                         appExecutors.mainThread().execute {
                             // we specially request a new live data,
                             // otherwise we will get immediately last cached value,
-                            // which may not be updated with latest results received from network.
+                            // which may not be updated with latest movieResults received from network.
                             result.addSource(loadFromDb()) { newData ->
                                 setValue(Resource.success(newData))
                             }

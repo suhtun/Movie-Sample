@@ -29,10 +29,8 @@ class RepoRepository @Inject constructor(
         setPage()
         val fetchNextSearchPageTask = FetchNextSearchPageTask(
             page = getPage(),
-            movie_id = 0,
             service = service,
-            db = db,
-            isDetail = false
+            db = db
         )
         appExecutors.networkIO().execute(fetchNextSearchPageTask)
         return fetchNextSearchPageTask.liveData
@@ -46,12 +44,12 @@ class RepoRepository @Inject constructor(
         preferencesHelper.nextPage = getPage() + 1
     }
 
-    fun search(): LiveData<Resource<List<Movie>>> {
+    fun searchMovie(): LiveData<Resource<List<Movie>>> {
         return object : NetworkBoundResource<List<Movie>, PlayingMoviewsResponse>(appExecutors) {
 
             override fun saveCallResult(items: PlayingMoviewsResponse) {
                 db.runInTransaction {
-                    movieDao.insertRepos(items.results.map {
+                    movieDao.insertRepos(items.movieResults.map {
                         Movie(
                             it.id,
                             it.title,
@@ -68,15 +66,7 @@ class RepoRepository @Inject constructor(
                 return data == null || data.isEmpty()
             }
 
-            override fun loadFromDb(): LiveData<List<Movie>> {
-                return Transformations.switchMap(movieDao.search()) { searchData ->
-                    if (searchData == null) {
-                        AbsentLiveData.create()
-                    } else {
-                        movieDao.search()
-                    }
-                }
-            }
+            override fun loadFromDb() = movieDao.getMovies()
 
             override fun createCall() = service.getPlayingMovie()
 

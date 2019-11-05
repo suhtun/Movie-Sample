@@ -5,11 +5,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import mm.com.sumyat.archiecture_sample.testing.OpenForTesting
 import mm.com.sumyat.archiecture_sample.vo.MDetail
 import mm.com.sumyat.archiecture_sample.vo.Movie
 import mm.com.sumyat.archiecture_sample.vo.Next
 
 @Dao
+@OpenForTesting
 abstract class MovieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -25,7 +27,7 @@ abstract class MovieDao {
     abstract fun updateNext(mid: Int, next: Int): Int
 
     @Query("SELECT * FROM movie")
-    abstract fun search(): LiveData<List<Movie>>
+    abstract fun getMovies(): LiveData<List<Movie>>
 
     @Query("SELECT * FROM MDetail WHERE `movie_id` = :movie_id")
     abstract fun searchMDetails(movie_id: Int): LiveData<List<MDetail>>
