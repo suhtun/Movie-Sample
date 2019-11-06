@@ -3,26 +3,25 @@ package mm.com.sumyat.archiecture_sample.ui.similar_movie
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import mm.com.sumyat.archiecture_sample.repository.DetailRepository
+import mm.com.sumyat.archiecture_sample.testing.OpenForTesting
 import mm.com.sumyat.archiecture_sample.util.AbsentLiveData
 import mm.com.sumyat.archiecture_sample.vo.MDetail
 import mm.com.sumyat.archiecture_sample.vo.Resource
 import mm.com.sumyat.archiecture_sample.vo.Status
 import javax.inject.Inject
 
-
+@OpenForTesting
 class SimilarViewModel @Inject constructor(private val repository: DetailRepository) :
     ViewModel() {
 
-    private val _query: MutableLiveData<Int> = MutableLiveData<Int>().apply {
-        value = 1
-    }
+    private val _query = MutableLiveData<String>()
 
     var results: LiveData<Resource<List<MDetail>>> = Transformations
         .switchMap(_query) { search ->
-            if (search == 1) {
+            if (search.isNullOrBlank()) {
                 AbsentLiveData.create()
             } else {
-                repository.search(search)
+                repository.search(search.toInt())
             }
         }
 
@@ -31,7 +30,7 @@ class SimilarViewModel @Inject constructor(private val repository: DetailReposit
 
     var loadMoreStatus: LiveData<LoadMoreState> = nextPageHandler.loadMoreState
 
-    fun setQuery(movie_id: Int) {
+    fun setQuery(movie_id: String) {
         if (movie_id == _query.value) {
             return
         }
@@ -41,7 +40,7 @@ class SimilarViewModel @Inject constructor(private val repository: DetailReposit
 
     fun loadNextPage() {
         _query.value?.let {
-            if (it != 1) {
+            if (it.isNotBlank()) {
                 nextPageHandler.queryNextPage(it)
             }
         }
@@ -56,7 +55,7 @@ class SimilarViewModel @Inject constructor(private val repository: DetailReposit
     class NextPageHandler(private val repository: DetailRepository) : Observer<Resource<Boolean>> {
         private var nextPageLiveData: LiveData<Resource<Boolean>>? = null
         var loadMoreState = MutableLiveData<LoadMoreState>()
-        private var query: Int = 1
+        private var query: String? = null
         private var _hasMore: Boolean = false
         val hasMore
             get() = _hasMore
@@ -65,13 +64,13 @@ class SimilarViewModel @Inject constructor(private val repository: DetailReposit
             reset()
         }
 
-        fun queryNextPage(query: Int) {
+        fun queryNextPage(query: String) {
             if (this.query == query) {
                 return
             }
             unregister()
             this.query = query
-            nextPageLiveData = repository.searchNextPage(query)
+            nextPageLiveData = repository.searchNextPage(query.toInt())
             loadMoreState.value =
                 LoadMoreState(
                     isRunning = true,
@@ -116,7 +115,7 @@ class SimilarViewModel @Inject constructor(private val repository: DetailReposit
             nextPageLiveData?.removeObserver(this)
             nextPageLiveData = null
             if (_hasMore) {
-                query = 1
+                query = null
             }
         }
 

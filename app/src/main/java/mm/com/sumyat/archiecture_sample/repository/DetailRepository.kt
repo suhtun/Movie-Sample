@@ -57,11 +57,11 @@ class DetailRepository @Inject constructor(
             }
 
             override fun loadFromDb(): LiveData<List<MDetail>> {
-                return Transformations.switchMap(movieDao.searchMDetails(movieid)) { searchData ->
+                return Transformations.switchMap(movieDao.getDetails(movieid)) { searchData ->
                     if (searchData == null) {
                         AbsentLiveData.create()
                     } else {
-                        movieDao.searchMDetails(movieid)
+                        movieDao.getDetails(movieid)
                     }
                 }
             }

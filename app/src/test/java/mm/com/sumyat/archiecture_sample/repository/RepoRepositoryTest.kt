@@ -70,7 +70,7 @@ class RepoRepositoryTest {
 
         dbData.postValue(null)
         Mockito.verify(service).getPlayingMovie()
-        Mockito.verify(dao).insertRepos(movies)
+        Mockito.verify(dao).insertMovies(movies)
 
         updatedDbData.postValue(movies)
         Mockito.verify(observer).onChanged(Resource.success(movies))

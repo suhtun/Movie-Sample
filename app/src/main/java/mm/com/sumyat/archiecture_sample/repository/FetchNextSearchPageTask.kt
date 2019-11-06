@@ -22,7 +22,6 @@ import mm.com.sumyat.archiecture_sample.api.*
 import mm.com.sumyat.archiecture_sample.cache.db.SampleDb
 import mm.com.sumyat.archiecture_sample.vo.Movie
 import mm.com.sumyat.archiecture_sample.vo.Resource
-import retrofit2.Response
 import java.io.IOException
 
 /**
@@ -45,7 +44,7 @@ class FetchNextSearchPageTask constructor(
             when (apiResponse) {
                 is ApiSuccessResponse -> {
                     db.runInTransaction {
-                        db.movieDao().insertRepos(apiResponse.body.movieResults.map {
+                        db.movieDao().insertMovies(apiResponse.body.movieResults.map {
                             Movie(
                                 it.id,
                                 it.title,

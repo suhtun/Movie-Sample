@@ -15,7 +15,7 @@ import mm.com.sumyat.archiecture_sample.vo.Next
 abstract class MovieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertRepos(repositories: List<Movie>)
+    abstract fun insertMovies(repositories: List<Movie>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertDetails(repositories: List<MDetail>)
@@ -30,8 +30,8 @@ abstract class MovieDao {
     abstract fun getMovies(): LiveData<List<Movie>>
 
     @Query("SELECT * FROM MDetail WHERE `movie_id` = :movie_id")
-    abstract fun searchMDetails(movie_id: Int): LiveData<List<MDetail>>
+    abstract fun getDetails(movie_id: Int): LiveData<List<MDetail>>
 
     @Query("SELECT next FROM Next WHERE `movie_id` = :movie_id")
-    abstract fun searchNext(movie_id: Int): Int
+    abstract fun getNext(movie_id: Int): Int
 }

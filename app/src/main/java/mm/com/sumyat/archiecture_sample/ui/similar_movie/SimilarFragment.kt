@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -18,12 +19,14 @@ import mm.com.sumyat.archiecture_sample.R
 import mm.com.sumyat.archiecture_sample.binding.FragmentDataBindingComponent
 import mm.com.sumyat.archiecture_sample.databinding.FragmentMovieDetailBinding
 import mm.com.sumyat.archiecture_sample.di.Injectable
+import mm.com.sumyat.archiecture_sample.testing.OpenForTesting
 import mm.com.sumyat.archiecture_sample.ui.common.RepoListAdapter
 import mm.com.sumyat.archiecture_sample.ui.common.RetryCallback
 import mm.com.sumyat.archiecture_sample.util.autoCleared
 import mm.com.sumyat.archiecture_sample.vo.Movie
 import javax.inject.Inject
 
+@OpenForTesting
 class SimilarFragment : Fragment(), Injectable {
 
     @Inject
@@ -63,7 +66,7 @@ class SimilarFragment : Fragment(), Injectable {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.movie = movie
 
-        viewmodel.setQuery(movie.id)
+
 
         initRecyclerView()
         val rvAdapter = RepoListAdapter(
@@ -75,6 +78,8 @@ class SimilarFragment : Fragment(), Injectable {
         binding.similarList.layoutManager = GridLayoutManager(context, 3)
         binding.similarList.adapter = rvAdapter
         this.adapter = rvAdapter
+
+        viewmodel.setQuery(movie.id.toString())
 
         binding.callback = object : RetryCallback {
             override fun retry() {
@@ -119,4 +124,9 @@ class SimilarFragment : Fragment(), Injectable {
             }
         })
     }
+
+    /**
+     * Created to be able to override in tests
+     */
+    fun navController() = findNavController()
 }

@@ -63,24 +63,24 @@ class FetchNextSearchPageTaskTest {
 
     @Test
     fun nextPageWithNull() {
-        val repos = TestUtil.createMovies(10, "movie")
+        val repos = TestUtil.createMovieResult(10, "movie")
         val result = PlayingMoviewsResponse( repos,2)
         val call = createCall(result)
         Mockito.`when`(service.getPlayingMovie(2)).thenReturn(call)
         task.run()
 
-        Mockito.verify(repoDao).insertRepos(TestUtil.movieResultToMovie(repos))
+        Mockito.verify(repoDao).insertMovies(TestUtil.movieResultToMovie(repos))
         Mockito.verify(observer).onChanged(null)
     }
 
     @Test
     fun nextPageWithMore() {
-        val repos = TestUtil.createMovies(10, "movie")
+        val repos = TestUtil.createMovieResult(10, "movie")
         val result = PlayingMoviewsResponse( repos,2)
         val call = createCall(result)
         Mockito.`when`(service.getPlayingMovie(2)).thenReturn(call)
         task.run()
-        Mockito.verify(repoDao).insertRepos(TestUtil.movieResultToMovie(repos))
+        Mockito.verify(repoDao).insertMovies(TestUtil.movieResultToMovie(repos))
         Mockito.verify(observer).onChanged(Resource.success(true))
     }
 

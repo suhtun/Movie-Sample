@@ -41,7 +41,7 @@ class FetchNextSearchDeatilPageTask constructor(
         val newValue = try {
             var next: Int = 0
             db.runInTransaction {
-                next = db.movieDao().searchNext(movie_id) + 1
+                next = db.movieDao().getNext(movie_id) + 1
                 db.movieDao().updateNext(movie_id, next)
             }
             var response = service.getSimilarMovies(movie_id, next).execute()

@@ -11,7 +11,7 @@ import mm.com.sumyat.archiecture_sample.vo.Status
 import javax.inject.Inject
 
 @OpenForTesting
-open class MoviesViewModel @Inject constructor(private val repository: RepoRepository) : ViewModel() {
+class MoviesViewModel @Inject constructor(private val repository: RepoRepository) : ViewModel() {
 
     private val _query = MutableLiveData<String>()
 

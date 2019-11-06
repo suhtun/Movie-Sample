@@ -17,15 +17,28 @@
 package mm.com.sumyat.archiecture_sample.util
 
 import mm.com.sumyat.archiecture_sample.api.MovieResult
+import mm.com.sumyat.archiecture_sample.vo.MDetail
 import mm.com.sumyat.archiecture_sample.vo.Movie
 import java.util.concurrent.ThreadLocalRandom
 
 
 object TestUtil {
 
-    fun createMovies(count: Int, title: String): List<MovieResult> {
+    fun createMovieResult(count: Int, title: String): List<MovieResult> {
         return (0 until count).map {
             createMovieResponse(title)
+        }
+    }
+
+    fun createMovies(count: Int, title: String): List<Movie> {
+        return (0 until count).map {
+            createMovie(title)
+        }
+    }
+
+    fun createMDetails(count: Int, title: String,movie_id: Int): List<MDetail> {
+        return (0 until count).map {
+            createMDetail(title,movie_id)
         }
     }
 
@@ -43,8 +56,12 @@ object TestUtil {
     }
 
     fun createMovie(title: String) = Movie(
-        randomInt(), title, randomUuid(), randomUuid(), randomUuid(),
+        randomInt(), title, randomUuid(), randomUuid(), "this is cartoon movie",
         randomUuid()
+    )
+
+    fun createMDetail(title: String,movie_id:Int) = MDetail(
+        randomInt(), title, randomUuid(), randomUuid(),movie_id
     )
 
     fun createMovieResponse(title: String) = MovieResult(

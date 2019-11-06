@@ -1,7 +1,6 @@
 package mm.com.sumyat.archiecture_sample.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.android.example.github.repository.NetworkBoundResource
 import mm.com.sumyat.archiecture_sample.AppExecutors
 import mm.com.sumyat.archiecture_sample.api.ApiSuccessResponse
@@ -11,7 +10,6 @@ import mm.com.sumyat.archiecture_sample.cache.PreferencesHelper
 import mm.com.sumyat.archiecture_sample.cache.db.MovieDao
 import mm.com.sumyat.archiecture_sample.cache.db.SampleDb
 import mm.com.sumyat.archiecture_sample.testing.OpenForTesting
-import mm.com.sumyat.archiecture_sample.util.AbsentLiveData
 import mm.com.sumyat.archiecture_sample.vo.Movie
 import mm.com.sumyat.archiecture_sample.vo.Resource
 import javax.inject.Inject
@@ -51,7 +49,7 @@ class RepoRepository @Inject constructor(
 
             override fun saveCallResult(items: PlayingMoviewsResponse) {
                 db.runInTransaction {
-                    movieDao.insertRepos(items.movieResults.map {
+                    movieDao.insertMovies(items.movieResults.map {
                         Movie(
                             it.id,
                             it.title,
