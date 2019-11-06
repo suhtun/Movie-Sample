@@ -1,7 +1,7 @@
 Watch Now Movie Sample with Android Architecture Components
 ===========================================================
 
-![architecture](https://giphy.com/gifs/archiecture-sample-app-LPUNJv2e48JR2dTbk0)
+![architecture](https://media.giphy.com/media/LPUNJv2e48JR2dTbk0/giphy.gif)
 
 This is a sample movie app that uses Android Architecture Components with Dagger 2.
 
